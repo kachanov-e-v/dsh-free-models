@@ -37,7 +37,7 @@ plugin_manager install_bundle target=https://github.com/kachanov-e-v/dsh-free-mo
 Воспроизводимая установка по тегу релиза:
 
 ```text
-plugin_manager install_bundle target=https://github.com/kachanov-e-v/dsh-free-models/archive/refs/tags/v0.1.2.tar.gz
+plugin_manager install_bundle target=https://github.com/kachanov-e-v/dsh-free-models/archive/refs/tags/v0.1.3.tar.gz
 ```
 
 Локальная разработка:
@@ -84,7 +84,7 @@ endpoint/протокола нужно выбрать другой route id.
 
 ## Мост к локальному шлюзу `dsh-our-free-model`
 
-В каталоге есть провайдер **Our Free Model gateway** (`routeId: our-free-model`).
+В каталоге есть провайдер **Our Free Model gateway** (`routeId: ofm-gateway`).
 Это не наша реализация OpenCode free lane, а мост к локальному
 OpenAI-совместимому шлюзу другого плагина:
 

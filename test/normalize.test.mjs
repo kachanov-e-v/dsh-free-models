@@ -258,6 +258,7 @@ test('curated data exposes the Our Free Model local gateway bridge', async () =>
   const data = await loadCurated();
   const bridge = data.providers.find((provider) => provider.key === 'our-free-model-gateway');
   assert.ok(bridge);
+  assert.equal(bridge.routeId, 'ofm-gateway');
   assert.equal(bridge.baseURL, 'http://127.0.0.1:8326/v1');
   assert.equal(bridge.api, 'openai-completions');
   assert.equal(bridge.apiKeyEnv, 'OUR_FREE_MODEL_GATEWAY_KEY');
