@@ -1,0 +1,185 @@
+{
+  "schemaVersion": 1,
+  "providers": [
+    {
+      "key": "groq",
+      "name": "Groq",
+      "routeId": "groq",
+      "freeKind": "free_tier",
+      "freeNote": "Free tier with rate limits; check Groq's docs for the current limits and supported models.",
+      "api": null,
+      "baseURL": null,
+      "apiKeyEnv": "GROQ_API_KEY",
+      "docsURL": "https://console.groq.com/docs/rate-limits",
+      "signupURL": "https://console.groq.com/keys",
+      "verifiedAt": "2026-11-09",
+      "sources": [
+        "https://console.groq.com/docs/rate-limits"
+      ]
+    },
+    {
+      "key": "google",
+      "name": "Google AI Studio",
+      "routeId": "google",
+      "freeKind": "free_tier",
+      "freeNote": "Free tier for supported Gemini models; quotas and eligible models are documented by Google.",
+      "api": null,
+      "baseURL": null,
+      "apiKeyEnv": "GEMINI_API_KEY",
+      "apiKeyEnvAliases": [
+        "GOOGLE_API_KEY",
+        "GOOGLE_GENERATIVE_AI_API_KEY"
+      ],
+      "docsURL": "https://ai.google.dev/gemini-api/docs/pricing",
+      "signupURL": "https://aistudio.google.com/apikey",
+      "verifiedAt": "2026-11-09",
+      "sources": [
+        "https://ai.google.dev/gemini-api/docs/pricing"
+      ]
+    },
+    {
+      "key": "cerebras",
+      "name": "Cerebras",
+      "routeId": "cerebras",
+      "freeKind": "free_tier",
+      "freeNote": "Developer/free tier with rate limits; confirm current model access on the pricing page.",
+      "api": null,
+      "baseURL": null,
+      "apiKeyEnv": "CEREBRAS_API_KEY",
+      "docsURL": "https://www.cerebras.ai/pricing",
+      "signupURL": "https://cloud.cerebras.ai/",
+      "verifiedAt": "2026-11-09",
+      "sources": [
+        "https://www.cerebras.ai/pricing"
+      ]
+    },
+    {
+      "key": "nvidia",
+      "name": "NVIDIA NIM",
+      "routeId": "nvidia",
+      "freeKind": "free_tier",
+      "freeNote": "NVIDIA NIM offers a rate-limited free API tier; check the NIM docs for current access rules.",
+      "api": "openai-completions",
+      "baseURL": "https://integrate.api.nvidia.com/v1",
+      "apiKeyEnv": "NVIDIA_API_KEY",
+      "docsURL": "https://docs.api.nvidia.com/nim/",
+      "signupURL": "https://build.nvidia.com/",
+      "verifiedAt": "2026-11-09",
+      "sources": [
+        "https://docs.api.nvidia.com/nim/"
+      ]
+    },
+    {
+      "key": "cloudflare",
+      "name": "Cloudflare Workers AI",
+      "routeId": "cloudflare",
+      "freeKind": "free_tier",
+      "freeNote": "Workers AI includes 10,000 Neurons per day at no charge; some frontier models require paid billing.",
+      "api": null,
+      "baseURL": null,
+      "apiKeyEnv": "CLOUDFLARE_API_TOKEN",
+      "docsURL": "https://developers.cloudflare.com/workers-ai/platform/pricing/",
+      "signupURL": "https://dash.cloudflare.com/",
+      "verifiedAt": "2026-11-09",
+      "sources": [
+        "https://developers.cloudflare.com/workers-ai/platform/pricing/"
+      ]
+    },
+    {
+      "key": "mistral",
+      "name": "Mistral AI",
+      "routeId": "mistral",
+      "freeKind": "free_tier",
+      "freeNote": "Mistral offers a free experimentation tier; check La Plateforme pricing for current limits.",
+      "api": null,
+      "baseURL": null,
+      "apiKeyEnv": "MISTRAL_API_KEY",
+      "docsURL": "https://docs.mistral.ai/getting-started/models/",
+      "signupURL": "https://console.mistral.ai/",
+      "verifiedAt": "2026-11-09",
+      "sources": [
+        "https://docs.mistral.ai/getting-started/models/"
+      ]
+    },
+    {
+      "key": "github",
+      "name": "GitHub Models",
+      "routeId": "github-models",
+      "freeKind": "free_tier",
+      "freeNote": "GitHub Models has a free tier for GitHub accounts with rate limits; the API is not a standard OpenAI-compatible route, so add it manually.",
+      "api": null,
+      "baseURL": null,
+      "apiKeyEnv": "GITHUB_TOKEN",
+      "docsURL": "https://docs.github.com/en/github-models",
+      "signupURL": "https://github.com/marketplace/models",
+      "verifiedAt": "2026-11-09",
+      "sources": [
+        "https://docs.github.com/en/github-models"
+      ]
+    },
+    {
+      "key": "modelscope",
+      "name": "ModelScope",
+      "routeId": "modelscope",
+      "freeKind": "free_tier",
+      "freeNote": "ModelScope offers free API inference for supported models; check its docs for quotas.",
+      "api": "openai-completions",
+      "baseURL": "https://api-inference.modelscope.cn/v1",
+      "apiKeyEnv": "MODELSCOPE_API_KEY",
+      "docsURL": "https://modelscope.cn/docs/model-service/API-Inference/intro",
+      "signupURL": "https://modelscope.cn/",
+      "verifiedAt": "2026-11-09",
+      "sources": [
+        "https://modelscope.cn/docs/model-service/API-Inference/intro"
+      ]
+    },
+    {
+      "key": "zhipuai",
+      "name": "Zhipu AI",
+      "routeId": "zhipuai",
+      "freeKind": "free_tier",
+      "freeNote": "Zhipu provides free access to selected GLM models; check the pricing page for current eligibility.",
+      "api": "openai-completions",
+      "baseURL": "https://open.bigmodel.cn/api/paas/v4",
+      "apiKeyEnv": "ZHIPU_API_KEY",
+      "docsURL": "https://docs.bigmodel.cn/cn/guide/start/pricing",
+      "signupURL": "https://open.bigmodel.cn/",
+      "verifiedAt": "2026-11-09",
+      "sources": [
+        "https://docs.bigmodel.cn/cn/guide/start/pricing"
+      ]
+    },
+    {
+      "key": "lmstudio",
+      "name": "LM Studio",
+      "routeId": "lmstudio",
+      "freeKind": "local",
+      "freeNote": "Local OpenAI-compatible server; no cloud fee, but you supply the hardware and model files.",
+      "api": "openai-completions",
+      "baseURL": "http://localhost:1234/v1",
+      "apiKeyEnv": "LMSTUDIO_API_KEY",
+      "docsURL": "https://lmstudio.ai/docs/app/api/endpoints/openai",
+      "signupURL": "https://lmstudio.ai/",
+      "verifiedAt": "2026-11-09",
+      "sources": [
+        "https://lmstudio.ai/docs/app/api/endpoints/openai"
+      ]
+    },
+    {
+      "key": "ollama",
+      "name": "Ollama",
+      "routeId": "ollama",
+      "freeKind": "local",
+      "freeNote": "Local OpenAI-compatible server; no cloud fee, but you supply the hardware and model files.",
+      "api": "openai-completions",
+      "baseURL": "http://localhost:11434/v1",
+      "apiKeyEnv": "OLLAMA_API_KEY",
+      "docsURL": "https://docs.ollama.com/api/openai-compatibility",
+      "signupURL": "https://ollama.com/",
+      "verifiedAt": "2026-11-09",
+      "sources": [
+        "https://docs.ollama.com/api/openai-compatibility"
+      ]
+    }
+  ]
+}

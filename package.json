@@ -1,0 +1,63 @@
+{
+  "name": "dsh-free-models",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "description": "Finds providers that offer free models, shows them in a Settings page, and can add a provider, store its key, and test it.",
+  "license": "MIT",
+  "author": "Evgeniy (https://github.com/kachanov-e-v)",
+  "homepage": "https://github.com/kachanov-e-v/dsh-free-models#readme",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/kachanov-e-v/dsh-free-models.git"
+  },
+  "bugs": {
+    "url": "https://github.com/kachanov-e-v/dsh-free-models/issues"
+  },
+  "keywords": [
+    "dsh",
+    "deepseek-harness",
+    "plugin",
+    "free-models",
+    "providers",
+    "llm"
+  ],
+  "exports": {
+    ".": "./index.js",
+    "./client": "./client.js",
+    "./locale/*.json": "./locale/*.json",
+    "./icon": "./icon.svg"
+  },
+  "files": [
+    "index.js",
+    "client.js",
+    "lib/*.js",
+    "lib/sources/*.js",
+    "data/*.json",
+    "cordis.patch.yml",
+    "locale/*.json",
+    "icon.svg",
+    "README.md",
+    "AGENTS.md",
+    "CHANGELOG.md",
+    "ROADMAP.md",
+    "docs/*.md",
+    "LICENSE"
+  ],
+  "scripts": {
+    "test": "node --test --test-isolation=none test/*.test.mjs"
+  },
+  "dsh": {
+    "bundle": {
+      "patch": "./cordis.patch.yml"
+    },
+    "client": {
+      "platform": "web",
+      "immediately": true,
+      "inject": [
+        "@deepseek-ai/dsh-client-ui-settings",
+        "@deepseek-ai/dsh-client-locale"
+      ]
+    }
+  }
+}
