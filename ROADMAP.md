@@ -14,6 +14,8 @@
 
 ## 0.2.0 — устойчивость и охват
 
+- [ ] Custom provider: произвольный OpenAI-совместимый endpoint (в т.ч. другой
+      порт локального шлюза `dsh-our-free-model`).
 - [ ] Дисковый кэш каталога между перезапусками (через storage domain).
 - [ ] ETag/If-None-Match для live-источников.
 - [ ] Больше источников: Cerebras API catalog, Together, Fireworks, SambaNova,

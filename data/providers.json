@@ -180,6 +180,22 @@
       "sources": [
         "https://docs.ollama.com/api/openai-compatibility"
       ]
+    },
+    {
+      "key": "our-free-model-gateway",
+      "name": "Our Free Model gateway",
+      "routeId": "our-free-model",
+      "freeKind": "local",
+      "freeNote": "Local OpenAI-compatible gateway of the dsh-our-free-model plugin (default 127.0.0.1:8326). Start that plugin, enable its gateway, and paste its gateway key. The gateway exposes that plugin's lanes, including the OpenCode free lane (GLM 5.3 Flash, DeepSeek 4.1 Flash). Access and rate limits are handled by that plugin.",
+      "api": "openai-completions",
+      "baseURL": "http://127.0.0.1:8326/v1",
+      "apiKeyEnv": "OUR_FREE_MODEL_GATEWAY_KEY",
+      "docsURL": "https://github.com/Ebony-Vinyl/dsh-our-free-model",
+      "signupURL": "https://github.com/Ebony-Vinyl/dsh-our-free-model",
+      "verifiedAt": "2026-11-09",
+      "sources": [
+        "https://github.com/Ebony-Vinyl/dsh-our-free-model"
+      ]
     }
   ]
 }

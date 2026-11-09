@@ -34,6 +34,9 @@
 - `free_tier` относится к провайдеру/квоте, а не к конкретной модели; UI и
   tool-отчёт должны это говорить.
 - `verifiedAt` старше 180 дней — предупреждение, а не тихое скрытие.
+- `Our Free Model gateway` — только мост к локальному шлюзу
+  `dsh-our-free-model` (`127.0.0.1:8326`). Не копировать его OpenCode free lane,
+  fingerprint-заголовки, EAC-seal, HMAC и account-каналы.
 
 ### Agent tools
 

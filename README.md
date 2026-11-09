@@ -37,7 +37,7 @@ plugin_manager install_bundle target=https://github.com/kachanov-e-v/dsh-free-mo
 Воспроизводимая установка по тегу релиза:
 
 ```text
-plugin_manager install_bundle target=https://github.com/kachanov-e-v/dsh-free-models/archive/refs/tags/v0.1.1.tar.gz
+plugin_manager install_bundle target=https://github.com/kachanov-e-v/dsh-free-models/archive/refs/tags/v0.1.2.tar.gz
 ```
 
 Локальная разработка:
@@ -81,6 +81,26 @@ endpoint/протокола нужно выбрать другой route id.
 
 Пример запроса агенту: «Найди бесплатные модели с контекстом от 200K и покажи
 конфиг для OpenRouter».
+
+## Мост к локальному шлюзу `dsh-our-free-model`
+
+В каталоге есть провайдер **Our Free Model gateway** (`routeId: our-free-model`).
+Это не наша реализация OpenCode free lane, а мост к локальному
+OpenAI-совместимому шлюзу другого плагина:
+
+1. Установите и запустите `dsh-our-free-model`.
+2. В его настройках включите **Gateway** (по умолчанию `127.0.0.1:8326`) и
+   скопируйте gateway key.
+3. В нашем плагине: **Settings → Бесплатные модели → Our Free Model gateway →
+   Добавить в DSH**.
+4. Введите gateway key, нажмите **Получить модели**, выберите нужные
+   (например, GLM 5.3 Flash / DeepSeek 4.1 Flash) и добавьте маршрут.
+
+Доступ к free lane, лимиты, подпись, сессии и ToS остаются на стороне
+`dsh-our-free-model`; наш плагин не копирует и не обходит его авторизацию.
+Если в другом плагине включён другой порт, укажите его вручную в Base URL
+(пока это делается через будущий custom provider; в текущей версии используется
+`127.0.0.1:8326`).
 
 ## Конфигурация плагина
 

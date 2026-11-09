@@ -5,7 +5,7 @@ import * as openrouter from '../lib/sources/openrouter.js';
 import * as kilo from '../lib/sources/kilo.js';
 import * as vercel from '../lib/sources/vercel.js';
 import * as modelsdev from '../lib/sources/modelsdev.js';
-import { normalizeCurated } from '../lib/sources/curated.js';
+import { loadCurated, normalizeCurated } from '../lib/sources/curated.js';
 import { finalizeProviders, mergeProviderRecords } from '../lib/normalize.js';
 
 const fetchedAt = '2026-11-09T12:00:00.000Z';
@@ -252,4 +252,14 @@ test('unverified providers are hidden by default and shown on request', () => {
   }]);
   assert.equal(finalizeProviders(merged, {}).length, 0);
   assert.equal(finalizeProviders(merged, { includeUnverified: true }).length, 1);
+});
+
+test('curated data exposes the Our Free Model local gateway bridge', async () => {
+  const data = await loadCurated();
+  const bridge = data.providers.find((provider) => provider.key === 'our-free-model-gateway');
+  assert.ok(bridge);
+  assert.equal(bridge.baseURL, 'http://127.0.0.1:8326/v1');
+  assert.equal(bridge.api, 'openai-completions');
+  assert.equal(bridge.apiKeyEnv, 'OUR_FREE_MODEL_GATEWAY_KEY');
+  assert.equal(bridge.freeKind, 'local');
 });
