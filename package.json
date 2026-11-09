@@ -1,6 +1,6 @@
 {
   "name": "dsh-free-models",
-  "version": "0.1.3",
+  "version": "0.1.4",
   "private": true,
   "type": "module",
   "description": "Finds providers that offer free models, shows them in a Settings page, and can add a provider, store its key, and test it.",

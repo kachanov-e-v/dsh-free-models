@@ -1,5 +1,11 @@
 # Changelog
 
+## 0.1.4 — 2026-11-09
+
+- Откат моста к `dsh-our-free-model`: провайдер `Our Free Model gateway`
+  удалён из каталога по запросу. Прямая реализация OpenCode free lane не
+  добавлялась.
+
 ## 0.1.3 — 2026-11-09
 
 - Исправлен route id моста: `ofm-gateway` вместо `our-free-model`, чтобы не
