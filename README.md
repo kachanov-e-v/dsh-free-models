@@ -37,7 +37,7 @@ plugin_manager install_bundle target=https://github.com/kachanov-e-v/dsh-free-mo
 Воспроизводимая установка по тегу релиза:
 
 ```text
-plugin_manager install_bundle target=https://github.com/kachanov-e-v/dsh-free-models/archive/refs/tags/v0.1.0.tar.gz
+plugin_manager install_bundle target=https://github.com/kachanov-e-v/dsh-free-models/archive/refs/tags/v0.1.1.tar.gz
 ```
 
 Локальная разработка:

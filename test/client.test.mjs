@@ -19,6 +19,16 @@ const reactStub = {
     return { type, props, children };
   },
   Fragment: Symbol('Fragment'),
+  Component: class Component {
+    constructor(props) {
+      this.props = props;
+      this.state = {};
+    }
+
+    setState(update) {
+      this.state = { ...this.state, ...(typeof update === 'function' ? update(this.state) : update) };
+    }
+  },
   useState(initial) {
     return [typeof initial === 'function' ? initial() : initial, () => {}];
   },
@@ -107,6 +117,23 @@ test('the main components render without throwing with an empty catalog', () => 
     onChanged() {},
   });
   assert.ok(panel);
+  const configuredPanel = helpers.SetupPanel({
+    provider: { ...provider, configured: true, configuredRouteId: 'openrouter-free' },
+    dsh: {
+      settings: { available: true, writable: true, revision: 1 },
+      configured: [{
+        routeId: 'openrouter-free',
+        apiKeyEnv: 'OPENROUTER_API_KEY',
+        credential: { configured: true },
+        models: [],
+      }],
+      installed: [],
+    },
+    t,
+    onClose() {},
+    onChanged() {},
+  });
+  assert.ok(configuredPanel);
   const deep = helpers.DeepSearch({ t });
   assert.ok(deep);
 });

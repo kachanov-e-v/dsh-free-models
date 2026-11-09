@@ -119,6 +119,9 @@ window.__ModuleLoader__.load({
       requestTest: 'The test sends one request to the provider and may count against its quota.',
       noWeb: 'Web search is not available in this profile.',
       loading: 'Loading catalog…',
+      renderError: 'The Free models page failed to render.',
+      renderErrorHint: 'Reload the page or retry. If it repeats, copy the error text.',
+      renderRetry: 'Retry',
       routeInvalid: 'Route id must start with a lowercase letter and contain only a-z, 0-9 and hyphens.',
       keyInvalid: 'The key contains characters an HTTP header cannot carry.',
       modelRequired: 'Select at least one model.',
@@ -227,6 +230,9 @@ window.__ModuleLoader__.load({
       requestTest: 'Тест отправит один запрос провайдеру и может расходовать его квоту.',
       noWeb: 'Веб-поиск недоступен в этом профиле.',
       loading: 'Загружаю каталог…',
+      renderError: 'Страница «Бесплатные модели» не смогла отрисоваться.',
+      renderErrorHint: 'Обновите страницу или повторите. Если ошибка повторяется, скопируйте текст ошибки.',
+      renderRetry: 'Повторить',
       routeInvalid: 'Route id должен начинаться со строчной буквы и содержать только a-z, 0-9 и дефисы.',
       keyInvalid: 'Ключ содержит символы, недопустимые в HTTP-заголовке.',
       modelRequired: 'Выберите хотя бы одну модель.',
@@ -447,12 +453,48 @@ window.__ModuleLoader__.load({
       }, state === 'ok' ? '✓' : '⧉');
     }
 
+    class ErrorBoundary extends React.Component {
+      constructor(props) {
+        super(props);
+        this.state = { error: null };
+      }
+
+      static getDerivedStateFromError(error) {
+        return { error };
+      }
+
+      componentDidCatch(error) {
+        try {
+          console.error('dsh-free-models: render failed', error);
+        } catch {
+          // The console is best-effort; the fallback still renders.
+        }
+      }
+
+      render() {
+        if (this.state.error !== null) {
+          const t = typeof this.props.t === 'function' ? this.props.t : (key) => en[key] ?? key;
+          return h('div', { className: 'dfm-empty' }, [
+            h('p', { key: 'title' }, t('renderError')),
+            h('p', { className: 'dfm-hint', key: 'hint' }, t('renderErrorHint')),
+            h('pre', { className: 'dfm-pre', key: 'error' }, String(this.state.error?.message ?? this.state.error)),
+            h(Button, { key: 'retry', onClick: () => this.setState({ error: null }) }, t('renderRetry')),
+          ]);
+        }
+        return this.props.children;
+      }
+    }
+
+    function SectionShell(props) {
+      return h(ErrorBoundary, { t: props.t }, h(FreeModelsSection, props));
+    }
+
     function ModelRow({ model, t, onCopy }) {
       const input = Array.isArray(model.input) && model.input.length > 0 ? model.input.join('+') : 'text';
       return h('div', { className: 'dfm-model' }, [
         h('div', { className: 'dfm-model-name', key: 'name' }, [
-          h('span', { className: 'dfm-model-id', title: model.id }, model.id),
-          h('span', { className: 'dfm-model-meta' }, `${formatContext(model.contextWindow)} ${t('context')} · ${formatContext(model.maxTokens)} ${t('output')} · ${input}`),
+          h('span', { className: 'dfm-model-id', title: model.id, key: 'id' }, model.id),
+          h('span', { className: 'dfm-model-meta', key: 'meta' }, `${formatContext(model.contextWindow)} ${t('context')} · ${formatContext(model.maxTokens)} ${t('output')} · ${input}`),
         ]),
         h(CopyButton, {
           key: 'copy',
@@ -473,8 +515,8 @@ window.__ModuleLoader__.load({
       return h('article', { className: 'dfm-card' }, [
         h('div', { className: 'dfm-card-head', key: 'head' }, [
           h('div', { key: 'titles' }, [
-            h('h3', { className: 'dfm-card-title' }, provider.displayName || provider.name || provider.key),
-            h('div', { className: 'dfm-card-route' }, `${provider.routeId}${provider.installedCatalog ? ` · ${t('installed')}` : ''}${provider.configured && provider.configuredRouteId && provider.configuredRouteId !== provider.routeId ? ` · ${provider.configuredRouteId}` : ''}`),
+            h('h3', { className: 'dfm-card-title', key: 'title' }, provider.displayName || provider.name || provider.key),
+            h('div', { className: 'dfm-card-route', key: 'route' }, `${provider.routeId}${provider.installedCatalog ? ` · ${t('installed')}` : ''}${provider.configured && provider.configuredRouteId && provider.configuredRouteId !== provider.routeId ? ` · ${provider.configuredRouteId}` : ''}`),
           ]),
           h('div', { className: 'dfm-row', key: 'badges' }, [
             h(Badge, { key: 'kind' }, kindLabel(provider.freeKind, t)),
@@ -541,10 +583,6 @@ window.__ModuleLoader__.load({
     }
 
     function SetupPanel({ provider, dsh, t, onClose, onChanged }) {
-      const configuredEntry = (dsh?.configured ?? []).find((entry) => entry.routeId === routeId)
-        ?? (dsh?.configured ?? []).find((entry) => entry.routeId === provider.configuredRouteId)
-        ?? (dsh?.configured ?? []).find((entry) => entry.routeId === provider.routeId)
-        ?? null;
       const [routeId, setRouteId] = React.useState(provider.configuredRouteId || provider.routeId || '');
       const [models, setModels] = React.useState(Array.isArray(provider.models) ? provider.models : []);
       const [selected, setSelected] = React.useState(() => new Set((provider.models ?? []).map((model) => model.id)));
@@ -558,6 +596,10 @@ window.__ModuleLoader__.load({
       const [config, setConfig] = React.useState(null);
       const [testModelText, setTestModelText] = React.useState('');
 
+      const configuredEntry = (dsh?.configured ?? []).find((entry) => entry.routeId === routeId)
+        ?? (dsh?.configured ?? []).find((entry) => entry.routeId === provider.configuredRouteId)
+        ?? (dsh?.configured ?? []).find((entry) => entry.routeId === provider.routeId)
+        ?? null;
       const settingsReady = dsh?.settings?.available === true && dsh?.settings?.writable === true;
       const routeError = validateRouteId(routeId);
       const selectedIds = [...selected];
@@ -696,8 +738,8 @@ window.__ModuleLoader__.load({
           h('h4', { key: 'title' }, configuredEntry ? t('setupTitleExisting') : t('setupTitle')),
           h(Button, { key: 'close', onClick: onClose }, t('close')),
         ]),
-        !settingsReady ? h('p', { className: 'dfm-warn' }, t('settingsUnavailable')) : null,
-        routeExists ? h('p', { className: 'dfm-hint' }, t('routeExists')) : null,
+        !settingsReady ? h('p', { className: 'dfm-warn', key: 'settings' }, t('settingsUnavailable')) : null,
+        routeExists ? h('p', { className: 'dfm-hint', key: 'route-exists' }, t('routeExists')) : null,
         h(Field, {
           key: 'route',
           label: t('routeId'),
@@ -711,7 +753,7 @@ window.__ModuleLoader__.load({
           spellCheck: false,
           autoComplete: 'off',
         })),
-        routeError ? h('p', { className: 'dfm-error' }, t('routeInvalid')) : null,
+        routeError ? h('p', { className: 'dfm-error', key: 'route-error' }, t('routeInvalid')) : null,
         env ? h('div', { className: 'dfm-hint', key: 'env' }, `${t('authEnv')}: ${env}`) : null,
         h(Field, {
           key: 'key',
@@ -731,22 +773,25 @@ window.__ModuleLoader__.load({
         })),
         h('label', { className: 'dfm-checkline', key: 'useEnv' }, [
           h('input', {
+            key: 'checkbox',
             type: 'checkbox',
             checked: useEnv,
             onChange: (event) => setUseEnv(event.target.checked),
           }),
-          h('span', null, t('useEnv')),
+          h('span', { key: 'label' }, t('useEnv')),
         ]),
         h('div', { className: 'dfm-row', key: 'modelActions' }, [
-          models.length === 0 ? h(Button, { onClick: fetchModels, disabled: busy !== '' }, busy === 'fetch' ? t('fetching') : t('fetchModels')) : null,
-          h('span', { className: 'dfm-hint' }, `${selectedIds.length} ${t('selectedModels')}`),
+          models.length === 0 ? h(Button, { key: 'fetch', onClick: fetchModels, disabled: busy !== '' }, busy === 'fetch' ? t('fetching') : t('fetchModels')) : null,
+          h('span', { className: 'dfm-hint', key: 'count' }, `${selectedIds.length} ${t('selectedModels')}`),
           h('button', {
+            key: 'select-all',
             type: 'button',
             className: 'dfm-btn dfm-mini',
             onClick: () => setSelected(new Set(models.map((model) => model.id))),
             disabled: models.length === 0,
           }, t('selectAll')),
           h('button', {
+            key: 'clear',
             type: 'button',
             className: 'dfm-btn dfm-mini',
             onClick: () => setSelected(new Set()),
@@ -758,6 +803,7 @@ window.__ModuleLoader__.load({
           className: 'dfm-model-option',
         }, [
           h('input', {
+            key: 'check',
             type: 'checkbox',
             checked: selected.has(model.id),
             onChange: () => toggle(model.id),
@@ -769,11 +815,12 @@ window.__ModuleLoader__.load({
         ]))) : h('p', { className: 'dfm-hint', key: 'noModels' }, usesInstalledCatalog ? t('installedCatalogNote') : t('noModels')),
         h('label', { className: 'dfm-checkline', key: 'test' }, [
           h('input', {
+            key: 'checkbox',
             type: 'checkbox',
             checked: testAfter,
             onChange: (event) => setTestAfter(event.target.checked),
           }),
-          h('span', null, `${t('testAfter')} — ${t('requestTest')}`),
+          h('span', { key: 'label' }, `${t('testAfter')} — ${t('requestTest')}`),
         ]),
         testAfter ? h(Field, {
           key: 'testModel',
@@ -859,7 +906,7 @@ window.__ModuleLoader__.load({
                 target: '_blank',
                 rel: 'noopener noreferrer',
               }, source.title || source.url),
-              source.snippet ? h('p', { className: 'dfm-hint', style: { margin: '2px 0 0' } }, source.snippet) : null,
+              source.snippet ? h('p', { className: 'dfm-hint', key: 'snippet', style: { margin: '2px 0 0' } }, source.snippet) : null,
             ])),
           ]) : null,
         ]) : null,
@@ -954,12 +1001,12 @@ window.__ModuleLoader__.load({
       return h('div', { className: 'dfm-root' }, [
         h('header', { className: 'dfm-head', key: 'head' }, [
           h('div', { key: 'titles' }, [
-            h('h2', { className: 'dfm-title' }, t('title')),
-            h('p', { className: 'dfm-sub' }, t('subtitle')),
+            h('h2', { className: 'dfm-title', key: 'title' }, t('title')),
+            h('p', { className: 'dfm-sub', key: 'subtitle' }, t('subtitle')),
           ]),
           h('div', { className: 'dfm-row', key: 'actions' }, [
-            h('span', { className: 'dfm-hint' }, `${t('updated')}: ${catalog ? fmtTime(catalog.generatedAt, t('never')) : '—'} · ${counts.providers} / ${counts.models}`),
-            h(Button, { onClick: () => load(true), disabled: loading }, loading ? t('refreshing') : t('refresh')),
+            h('span', { className: 'dfm-hint', key: 'updated' }, `${t('updated')}: ${catalog ? fmtTime(catalog.generatedAt, t('never')) : '—'} · ${counts.providers} / ${counts.models}`),
+            h(Button, { key: 'refresh', onClick: () => load(true), disabled: loading }, loading ? t('refreshing') : t('refresh')),
           ]),
         ]),
         catalog?.sources ? h('div', { className: 'dfm-source-row', key: 'sources' }, catalog.sources.map((source) => h(Badge, {
@@ -1005,23 +1052,25 @@ window.__ModuleLoader__.load({
           ]),
         ]),
         h('div', { className: 'dfm-row', key: 'toggles' }, [
-          h('label', { className: 'dfm-check' }, [
+          h('label', { className: 'dfm-check', key: 'configured' }, [
             h('input', {
+              key: 'checkbox',
               type: 'checkbox',
               checked: configuredOnly,
               onChange: (event) => setConfiguredOnly(event.target.checked),
             }),
-            h('span', null, t('configuredOnly')),
+            h('span', { key: 'label' }, t('configuredOnly')),
           ]),
-          h('label', { className: 'dfm-check' }, [
+          h('label', { className: 'dfm-check', key: 'unverified' }, [
             h('input', {
+              key: 'checkbox',
               type: 'checkbox',
               checked: showUnverified,
               onChange: (event) => {
                 setShowUnverified(event.target.checked);
               },
             }),
-            h('span', null, t('showUnverified')),
+            h('span', { key: 'label' }, t('showUnverified')),
           ]),
         ]),
         providers.length === 0 && !loading ? h('div', { className: 'dfm-empty', key: 'empty' }, t('noProviders')) : null,
@@ -1034,14 +1083,17 @@ window.__ModuleLoader__.load({
             onSetup: openSetup,
             onConfig: copyProviderConfig,
           }),
-          setupKey === provider.key ? h(SetupPanel, {
+          setupKey === provider.key ? h(ErrorBoundary, {
             key: 'setup',
+            t,
+          }, h(SetupPanel, {
+            key: 'setup-panel',
             provider,
             dsh,
             t,
             onClose: () => setSetupKey(''),
             onChanged: () => load(false),
-          }) : null,
+          })) : null,
         ]))),
         h(DeepSearch, { key: 'deep', t }),
         toast ? h('div', { className: 'dfm-toast', key: 'toast' }, toast) : null,
@@ -1064,7 +1116,7 @@ window.__ModuleLoader__.load({
         label: () => t('nav'),
         locale: NS,
         inject: () => ({ t }),
-      }, FreeModelsSection)), 'free-models: settings section');
+      }, SectionShell)), 'free-models: settings section');
     }
 
     const client = { apply, inject: ['slots', 'locale'] };
